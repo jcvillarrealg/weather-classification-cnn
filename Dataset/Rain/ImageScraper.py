@@ -24,7 +24,7 @@ pending_urls = []
 pending_file = open("pending_" + urls_file, "w")
 info_file = open("images_info.txt", "w")
 
-info_file.write("FileName,Title,,Author,License,Comments,URL")
+info_file.write("FileName,Title,Author,License,Comments,URL")
 
 
 
@@ -83,7 +83,7 @@ for url in urls:
 
 	#Writing info of the image
 	#FileName,Title,,Author,License,Comments,URL
-	saux = "\n" + str(count).rjust(4, '0') + ".jpg" + "," + title + "," + author + "," + license + "No Changes" + "," + url
+	saux = "\n" + str(count).rjust(4, '0') + ".jpg" + "," + title + "," + author + "," + license + ",No Changes" + "," + url
 
 	info_file.write(saux.encode("utf-8"))
 
