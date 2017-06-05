@@ -30,5 +30,7 @@ with open(new_file) as f_new:
 		if line not in links:
 			links.add(line)
 			non_dup_file.write(line)
+		else:
+			print("Found Duplicate")
 
 non_dup_file.close()
