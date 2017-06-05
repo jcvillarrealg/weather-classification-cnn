@@ -10,6 +10,15 @@ import urllib
 print("What is the name of the file that contains the urls?")
 urls_file = raw_input()
 
+print("What should be the name of the file containing the pending urls?")
+pending_filename = raw_input()
+
+print("What should be the name of the file containing the information of the images?")
+info_filename = raw_input()
+
+print("What should be the number for the first image?")
+count = raw_input()
+
 urls = []
 
 with open(urls_file) as file_obj:
@@ -17,12 +26,13 @@ with open(urls_file) as file_obj:
 
 urls = [line.strip() for line in lines]
 
-count = 0
+count = int(count)-1
 
 pending_urls = []
 
-pending_file = open("pending_" + urls_file, "w")
-info_file = open("images_info.txt", "w")
+pending_file = open(pending_filename, "w")
+info_file = open(info_filename, "w")
+
 
 info_file.write("FileName,Title,Author,License,Comments,URL")
 
