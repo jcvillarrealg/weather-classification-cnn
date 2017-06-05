@@ -26,7 +26,7 @@ with open(urls_file) as file_obj:
 
 urls = [line.strip() for line in lines]
 
-count = count-1
+count = int(count)-1
 
 pending_urls = []
 
