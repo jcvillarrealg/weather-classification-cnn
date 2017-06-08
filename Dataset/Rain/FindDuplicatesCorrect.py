@@ -46,28 +46,10 @@ for url in urls:
 	tree = html.fromstring(page.content)
 
 
-	# In[10]:
-
-	#Author
-	try:
-		author = tree.xpath("//div[@class='attribution-info']/a/text()")[0]
-	except:
-		title = "Not Provided"
-
-	# In[11]:
-
-	#Title
-	try:
-		title = tree.xpath("//head/meta[@property='og:title']/@content")[0]
-	except:
-		title = "Not Provided"
-
 	#Image URL
 	image_url = tree.xpath("//head/meta[@property='og:image']/@content")[0]
 
-	aux = (author,title)
-	if aux not in images and image_url not in images_urls:
-		images.add(aux)
+	if image_url not in images_urls:
 		images_urls.add(image_url)
 	else:
 		#Duplicate image
