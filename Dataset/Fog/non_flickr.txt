@@ -1,0 +1,13 @@
+FileName,Title,Author,License,Comments,URL
+0138.jpg,Not Provided,Unsplash,https://creativecommons.org/publicdomain/zero/1.0/deed.en,No Changes,https://pixabay.com/en/misty-road-fog-foggy-mystery-1208267/
+0140.jpg,Foggy Street,Ian W. Fieggen,https://creativecommons.org/licenses/by-sa/3.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:20080313_Foggy_Street.jpg
+0141.jpg,A foggy morning in Victoria Park Tranmere,Rept0n1x,https://creativecommons.org/licenses/by-sa/3.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:A_foggy_morning_in_Victoria_Park,_Tranmere_(5).jpg
+0142.jpg,Not Provided,Pexels,https://creativecommons.org/publicdomain/zero/1.0/deed.en,No Changes,https://pixabay.com/en/asphalt-drive-fog-foggy-foliage-1846756/
+0143.jpg,Foggy Two Union Square in Seattle Washington 02-2005,Quasipalm,https://creativecommons.org/licenses/by/2.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:Foggy_Two_Union_Square_in_Seattle,_Washington_02-2005.jpg
+0144.jpg,Foggy Coastline,Alanthebox,https://creativecommons.org/publicdomain/zero/1.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:Foggy_Coastline.JPG
+0145.jpg,Tram 146 in foggy Madlow,Trio3D,https://creativecommons.org/licenses/by-sa/3.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:Tram_146_in_foggy_Madlow.png
+0146.jpg,Foggy night at Pikisaari Tornio, Finland 2015 May,Ximonic (Simo Räsänen),https://creativecommons.org/licenses/by-sa/4.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:Foggy_night_at_Pikisaari,_Tornio,_Finland,_2015_May_-_3.jpg
+0147.jpg,Spain-France Border Portalet,Willtron,https://creativecommons.org/licenses/by-sa/3.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:Spain-France_Border_Portalet.jpg
+0148.jpg,Glenrock Farm Westboro MA Foggy Morning,Rhavasy,https://creativecommons.org/licenses/by-sa/3.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:Glenrock_Farm_Westboro_MA_Foggy_Morning.jpg
+0149.jpg,Acadia National Park,Michael180,https://creativecommons.org/licenses/by-sa/2.5/,No Changes,https://commons.wikimedia.org/wiki/Fog#/media/File:Acadia_NP_fog_2005-1-18.JPG
+0150.jpg,Foggy Portland Morning,Peter Merholz,https://creativecommons.org/licenses/by-sa/2.0/deed.en,No Changes,https://commons.wikimedia.org/wiki/File:Foggy_Portland_Morning.jpg
