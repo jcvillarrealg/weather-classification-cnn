@@ -1,0 +1,2 @@
+The Cloudy dataset used as part of this project was produced by Lu et al. as part of their publication with title "Two-class Weather Classification".
+C. Lu, D. Lin, J. Jia and C.-K. Tang, "Two-Class Weather Classification," in 2014 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Columbus, 2014.
