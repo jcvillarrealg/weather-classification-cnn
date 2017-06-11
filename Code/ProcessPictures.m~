@@ -1,0 +1,14 @@
+%Identify the images to process
+files = dir('../Dataset/Foggy/*.jpg')
+%Variable with the dir
+origin_dir = string('../Dataset/Foggy/');
+directory = string('../Dataset/Foggy_SP/');
+iNumPixels = 50;
+count = 1;
+for file = files
+    aux = file.name;
+    A =imread(char(strcat(origin_dir,string(aux))));
+    drawsuperpixelsonimage(A,iNumPixels,count,directory);
+    aux = '';
+    count = count + 1;
+end

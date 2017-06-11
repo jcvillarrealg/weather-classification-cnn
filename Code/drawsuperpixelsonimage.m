@@ -4,8 +4,9 @@ function [ bValue ] = drawsuperpixelsonimage( imageFile, iNumPixels, count, dire
 A =imageFile;
 [L,N] = superpixels(A,iNumPixels);
 BW = boundarymask(L);
-f = figure('visible', 'off')
-imshow(imoverlay(A,BW,'cyan'),'InitialMagnification',67)
+f = figure('visible', 'off');
+iptsetpref('ImshowBorder','tight');
+imshow(imoverlay(A,BW,'white'))
 saveas(f,char(strcat(directory,pad(string(count),4,'left','0'))),'jpg')
 bValue = true
 end
