@@ -1,13 +1,20 @@
+clear
 %Identify the images to process
-files = dir('../Dataset/Foggy/*.jpg')
-%Variable with the dir
-origin_dir = string('../Dataset/Foggy/');
-directory = string('../Dataset/Foggy_SP/');
-iNumPixels = 50;
-count = 1;
-for file = files
+files = dir('../Dataset/Rainy/1100.jpg')
+%Variable with the directory where images came from
+origin_dir = string('../Dataset/Rainy/');
+%Directory where the processed images will be saved
+directory = string('../Dataset/Rainy_SP/');
+%Number of desired pixels to add to the images
+iNumPixels = 100;
+%counter to indicate the names of the images
+count = 1099;
+for file = files'
+    %Identifying the name of the current image
     aux = file.name;
+    %Reading the file with the current image
     A =imread(char(strcat(origin_dir,string(aux))));
+    %Using the custom image that adds the pixels and saves the image
     drawsuperpixelsonimage(A,iNumPixels,count,directory);
     aux = '';
     count = count + 1;
