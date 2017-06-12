@@ -1,10 +1,10 @@
 clear
 %Identify the images to process
-files = dir('../Dataset/Snowy/*.jpg')
+files = dir('../Dataset/Sunny/*.jpg')
 %Variable with the directory where images came from
-origin_dir = string('../Dataset/Snowy/');
+origin_dir = string('../Dataset/Sunny/');
 %Directory where the processed images will be saved
-directory = string('../Dataset/Snowy_SP/');
+directory = string('../Dataset/Sunny_SP/');
 %Number of desired pixels to add to the images
 iNumPixels = 100;
 %counter to indicate the names of the images
