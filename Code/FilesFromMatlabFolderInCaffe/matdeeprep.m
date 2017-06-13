@@ -55,8 +55,14 @@ function [code,code_v] = matdeeprep(model,dataset,category)
 %(2)     code_v = the extracted features for the test images
 
 %% (1) Network initialisation
-
+%Adding location for MATLAB's caffe 
 addpath('/Users/JoseCarlosVillarreal/Documents/caffe/matlab/')
+
+initial_test_img_num = 770;
+
+% Initialising code and code_v variables to ensure they are assigned and
+% returned by the function
+code = [];
 
 % Set caffe mode - At the moment only CPU is available
 caffe.set_mode_cpu();
@@ -92,18 +98,25 @@ end
 %% (2) Set paths & calculate number of images inside folders
 
 pos_train_dir= sprintf('./datasets/%s/POS_TRAIN/%s/', dataset, category);
-pos_num_train_images=length(dir(pos_train_dir))-4; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from pos_num_train_images.
+pos_num_train_images=length(dir(pos_train_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from pos_num_train_images.
 
 
 neg_train_dir= sprintf('./datasets/%s/NEG_TRAIN/%s/', dataset, category);
-neg_num_train_images=length(dir(neg_train_dir))-4; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from neg_num_train_images.
+neg_num_train_images=length(dir(neg_train_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from neg_num_train_images.
 
 
 pos_test_dir= sprintf('./datasets/%s/POS_TEST/%s/', dataset,category);
-pos_num_test_images=length(dir(pos_test_dir))-4; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from pos_num_test_images.
+pos_num_test_images=length(dir(pos_test_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from pos_num_test_images.
 
-neg_test_dir='./datasets/animals_val/';
-neg_num_test_images=length(dir(neg_test_dir))-3; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from neg_num_test_images.
+neg_test_dir= sprintf('./datasets/%s/NEG_TEST/%s/', dataset,category);
+neg_num_test_images=length(dir(neg_test_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from neg_num_test_images.
+
+%%NEW
+pos_num_test_images = pos_num_test_images + initial_test_img_num;
+neg_num_test_images = neg_num_test_images + initial_test_img_num;
+
+disp('Neg_num_test_images')
+disp(neg_num_test_images)
 
 tStart = tic;
 %% (3) Training
@@ -111,7 +124,7 @@ tStart = tic;
 % Positive Training
 h = waitbar(0,'Positive Training...','Name', 'TRAINING IN PROGRES');
 for i = 1:pos_num_train_images
-
+    disp(i)
     sample_image_path =strcat(pos_train_dir,sprintf('%04d.jpg',i)); % Concatenate strings horizontally
     im = imread(sample_image_path);
     im = standardizeImage(im); % ensure of type single, w. three channels
@@ -214,7 +227,10 @@ cprintf('*text', '??? Negative Training \n');
 % Positive testing 
 h = waitbar(0,'Positive Testing...','Name', 'TESTING IN PROGRES');
 
+code_v = [];
+
 for i = 771:pos_num_test_images
+    disp(i)
     sample_image_path=strcat(pos_test_dir,sprintf('%04d.jpg',i));
     im = imread(sample_image_path);
     im = standardizeImage(im); % ensure of type single, w. three channels
@@ -266,9 +282,9 @@ cprintf('*text', '??? Positive Testing \n');
 % Negative testing (Random images of animals)
 h = waitbar(0,'Negative Testing...','Name', 'TESTING IN PROGRES');
 
-for i = 1:neg_num_test_images
+for i = 771:neg_num_test_images
     j = i + pos_num_test_images;
-        
+    disp(i)
     sample_image_path =strcat(neg_test_dir,sprintf('%04d.jpg',i)); % Concatenate strings horizontally
     im = imread(sample_image_path);
     im = standardizeImage(im); % ensure of type single, w. three channels
