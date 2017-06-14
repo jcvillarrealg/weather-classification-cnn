@@ -18,10 +18,15 @@ for i = (1:1:length(models))
         current_dir = string(features_base_dir) + string(sprintf('%s/%s', models(i), categories(j)));
         [code, code_v, code_neg, code_v_neg] = matdeeprep(char(models(i)), 'ExtendedWeatherDatabase', char(categories(j)));
         
-        save(char(current_dir + string('positive_train_features.mat')), code);
-        save(char(current_dir + string('positive_test_features.mat')), code_v);
-        save(char(current_dir + string('negative_train_features.mat')), code_neg);
-        save(char(current_dir + string('negative_test_features.mat')), code_v_neg);
+        save(char(current_dir + string('positive_train_features.mat')), 'code');
+        save(char(current_dir + string('positive_test_features.mat')), 'code_v');
+        save(char(current_dir + string('negative_train_features.mat')), 'code_neg');
+        save(char(current_dir + string('negative_test_features.mat')), 'code_v_neg');
+        
+        code = [];
+        code_v = [];
+        code_neg = [];
+        code_v_neg = [];
         
     end
 end

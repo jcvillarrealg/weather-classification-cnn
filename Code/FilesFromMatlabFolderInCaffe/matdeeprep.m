@@ -336,8 +336,9 @@ fprintf('\n');
 fprintf('\n');
 
 % Getting only the features with non zero values in the negative results
-code_v = code_v(:,771:1100)
-code_v_neg = code_v_neg(:,1871:2200)
+code_v = code_v(:,771:1100);
+code_v_neg = code_v_neg(:,1871:2200);
+code_neg = code_neg(:,771:1540);
 
 
 %% Time elapsed for the whole process 
