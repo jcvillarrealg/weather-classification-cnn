@@ -63,6 +63,7 @@ initial_test_img_num = 770;
 % Initialising code and code_v variables to ensure they are assigned and
 % returned by the function
 code = [];
+code_v = [];
 
 % Set caffe mode - At the moment only CPU is available
 caffe.set_mode_cpu();
@@ -73,10 +74,12 @@ model_dir = sprintf('../../models/%s/', model);
 prototxt_file = dir( fullfile(model_dir,'*deploy.prototxt') );   %# list all *.prototxt files
 caffemodel_file = dir( fullfile(model_dir,'*.caffemodel') );   %# list all *.caffemodel files
 
-net_model = [model_dir prototxt_file.name];
-net_weights = [model_dir caffemodel_file.name];
+net_model = [model_dir prototxt_file.name]; %Complete path to the protoxt file found in the directory
+net_weights = [model_dir caffemodel_file.name]; %Complete path to the protoxt file found in the directory
 
 phase = 'test'; % run with phase test (so that dropout isn't applied)
+
+% Checking that the variable net_weights contains a file
 if ~exist(net_weights, 'file')
   sMessage = sprintf('Please download %s from Model Zoo before you run this demo',model);
   error(sMessage);
@@ -115,8 +118,6 @@ neg_num_test_images=length(dir(neg_test_dir))-2; % Unless you want to consider '
 pos_num_test_images = pos_num_test_images + initial_test_img_num;
 neg_num_test_images = neg_num_test_images + initial_test_img_num;
 
-disp('Neg_num_test_images')
-disp(neg_num_test_images)
 
 tStart = tic;
 %% (3) Training
@@ -124,7 +125,6 @@ tStart = tic;
 % Positive Training
 h = waitbar(0,'Positive Training...','Name', 'TRAINING IN PROGRES');
 for i = 1:pos_num_train_images
-    disp(i)
     sample_image_path =strcat(pos_train_dir,sprintf('%04d.jpg',i)); % Concatenate strings horizontally
     im = imread(sample_image_path);
     im = standardizeImage(im); % ensure of type single, w. three channels
@@ -227,10 +227,7 @@ cprintf('*text', '??? Negative Training \n');
 % Positive testing 
 h = waitbar(0,'Positive Testing...','Name', 'TESTING IN PROGRES');
 
-code_v = [];
-
 for i = 771:pos_num_test_images
-    disp(i)
     sample_image_path=strcat(pos_test_dir,sprintf('%04d.jpg',i));
     im = imread(sample_image_path);
     im = standardizeImage(im); % ensure of type single, w. three channels
@@ -284,7 +281,6 @@ h = waitbar(0,'Negative Testing...','Name', 'TESTING IN PROGRES');
 
 for i = 771:neg_num_test_images
     j = i + pos_num_test_images;
-    disp(i)
     sample_image_path =strcat(neg_test_dir,sprintf('%04d.jpg',i)); % Concatenate strings horizontally
     im = imread(sample_image_path);
     im = standardizeImage(im); % ensure of type single, w. three channels
@@ -304,7 +300,7 @@ for i = 771:neg_num_test_images
         if isequal(model,'ResNet50')==1 || isequal(model,'ResNet101') || isequal(model,'ResNet152')
             data = net.blobs('res5c_branch2c').get_data;
             data = data(2:2:6, 2:2:6, : );
-            code_v(:,i) = data( : );
+            code_v(:,j) = data( : );
             
         elseif isequal(model,'VGG_CNN_M')==1 || isequal(model,'VGGNet16')==1 || isequal(model,'VGGNet19')==1 || isequal(model,'VGG_CNN_S')==1 || isequal(model,'VGG_CNN_F')==1
             code_v(:,j) = net.blobs('fc7').get_data();
