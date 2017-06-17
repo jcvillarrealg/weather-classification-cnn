@@ -2,8 +2,14 @@
 addpath('/Users/JoseCarlosVillarreal/Documents/DissertationDevelopment/weather-classification-cnn/features/');
 
 %%IMPORTANT VARIABLES TO CHANGES ON EACH RUN
-model = 'bvlc_googlenet';
+
+curr_model = 5;
+
+models = [string('bvlc_googlenet'),string('placesCNN'),string('ResNet50'),string('ResNet101'),string('ResNet152'),string('VGG_CNN_F'),string('VGG_CNN_M'),string('VGG_CNN_S'),string('VGGNet16'),string('VGGNet19') ];
 category = [string('cloudy'), string('foggy'), string('rainy'), string('snowy'), string('sunny')];
+number_features = [9216 4096 18432 18432 18432 4096 4096 4096 4096 4096];
+model = char(models(curr_model)); % 1 - bvlc_googlenet
+
 
 %Loading data
 %pos_train, neg_train, pos_test, neg_test
@@ -142,12 +148,26 @@ neg_train = [neg_train_cloudy neg_train_foggy neg_train_rainy neg_train_snowy ne
 pos_test = [pos_test_cloudy pos_test_foggy pos_test_rainy pos_test_snowy pos_test_sunny];
 neg_test = [neg_test_cloudy neg_test_foggy neg_test_rainy neg_test_snowy neg_test_sunny];
 
+% Make permutation on the matrices
+pos_train = pos_train(:,randperm(size(pos_train, 2)));
+neg_train = neg_train(:,randperm(size(neg_train, 2)));
+pos_test = pos_test(:,randperm(size(pos_test, 2)));
+neg_test = neg_test(:,randperm(size(neg_test, 2)));
 
-% Una vez que se tienen todas las categorias, concatenar horizontalmente y
-% hacer permutacion aleatoria
+% Separate the rows from the last one, in order of getting 
+% both the data and the labels
+data_pos_train = pos_train(1:number_features(curr_model),:);
+labels_pos_train = pos_train(number_features(curr_model)+1,:);
 
-%Separar los renglones del ultimo renglon para tener datos y labels por
-%separado y listos para el paso 2: classifier
+data_neg_train = neg_train(1:number_features(curr_model),:);
+labels_neg_train = neg_train(number_features(curr_model)+1,:);
+
+data_pos_test = pos_test(1:number_features(curr_model),:);
+labels_pos_test = pos_test(number_features(curr_model)+1,:);
+
+data_neg_test = neg_test(1:number_features(curr_model),:);
+labels_neg_test = neg_test(number_features(curr_model)+1,:);
+
 
 % --------------------------------------------------------------------
 % Stage B: Training a classifier
@@ -157,33 +177,29 @@ neg_test = [neg_test_cloudy neg_test_foggy neg_test_rainy neg_test_snowy neg_tes
 % cross-validated. Here for simplicity we pick a valute that works
 % well with all kernels.
 C = 10 ;
-[w, bias] = trainLinearSVM(histograms, labels, C) ;
-disp('Histograms')
-disp(histograms(1:5,1:5))
-disp('labels')
-disp(labels(115:130))
+[w, bias] = trainLinearSVM(data_pos_train, labels_pos_train, C) ;
 
 % Evaluate the scores on the training data
-scores = w' * histograms + bias ;
+scores = w' * data_pos_train + bias ;
 
 % Visualize the ranked list of images
-figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
-displayRankedImageList(names, scores)  ;
+%figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
+%displayRankedImageList(names, scores)  ;
 
 % Visualize the precision-recall curve
-figure(2) ; clf ; set(2,'name','Precision-recall on train data') ;
-vl_pr(labels, scores) ;
+%figure(2) ; clf ; set(2,'name','Precision-recall on train data') ;
+%vl_pr(labels, scores) ;
 
 % --------------------------------------------------------------------
 % Stage C: Classify the test images and assess the performance
 % --------------------------------------------------------------------
 
 % Test the linear SVM
-testScores = w' * testHistograms + bias ;
+testScores = w' * data_pos_test + bias ;
 
 % Visualize the ranked list of images
-figure(3) ; clf ; set(3,'name','Ranked test images (subset)') ;
-displayRankedImageList(testNames, testScores)  ;
+%figure(3) ; clf ; set(3,'name','Ranked test images (subset)') ;
+%displayRankedImageList(testNames, testScores)  ;
 
 % Visualize visual words by relevance on the first image
 % [~,best] = max(testScores) ;
@@ -191,11 +207,11 @@ displayRankedImageList(testNames, testScores)  ;
 
 % Visualize the precision-recall curve
 figure(4) ; clf ; set(4,'name','Precision-recall on test data') ;
-vl_pr(testLabels, testScores) ;
+vl_pr(labels_pos_test, testScores) ;
 
 % Print results
-[drop,drop,info] = vl_pr(testLabels, testScores) ;
+[drop,drop,info] = vl_pr(labels_pos_test, testScores) ;
 fprintf('Test AP: %.2f\n', info.auc) ;
 
 [drop,perm] = sort(testScores,'descend') ;
-fprintf('Correctly retrieved in the top 36: %d\n', sum(testLabels(perm(1:36)) > 0)) ;
+fprintf('Correctly retrieved in the top 36: %d\n', sum(labels_pos_test(perm(1:36)) > 0)) ;
