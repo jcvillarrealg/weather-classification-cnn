@@ -142,60 +142,7 @@ neg_train = [neg_train_cloudy neg_train_foggy neg_train_rainy neg_train_snowy ne
 pos_test = [pos_test_cloudy pos_test_foggy pos_test_rainy pos_test_snowy pos_test_sunny];
 neg_test = [neg_test_cloudy neg_test_foggy neg_test_rainy neg_test_snowy neg_test_sunny];
 
-
-% Una vez que se tienen todas las categorias, concatenar horizontalmente y
-% hacer permutacion aleatoria
-
-%Separar los renglones del ultimo renglon para tener datos y labels por
-%separado y listos para el paso 2: classifier
-
-% --------------------------------------------------------------------
-% Stage B: Training a classifier
-% --------------------------------------------------------------------
-
-% Train the linear SVM. The SVM paramter C should be
-% cross-validated. Here for simplicity we pick a valute that works
-% well with all kernels.
-C = 10 ;
-[w, bias] = trainLinearSVM(histograms, labels, C) ;
-disp('Histograms')
-disp(histograms(1:5,1:5))
-disp('labels')
-disp(labels(115:130))
-
-% Evaluate the scores on the training data
-scores = w' * histograms + bias ;
-
-% Visualize the ranked list of images
-figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
-displayRankedImageList(names, scores)  ;
-
-% Visualize the precision-recall curve
-figure(2) ; clf ; set(2,'name','Precision-recall on train data') ;
-vl_pr(labels, scores) ;
-
-% --------------------------------------------------------------------
-% Stage C: Classify the test images and assess the performance
-% --------------------------------------------------------------------
-
-% Test the linear SVM
-testScores = w' * testHistograms + bias ;
-
-% Visualize the ranked list of images
-figure(3) ; clf ; set(3,'name','Ranked test images (subset)') ;
-displayRankedImageList(testNames, testScores)  ;
-
-% Visualize visual words by relevance on the first image
-% [~,best] = max(testScores) ;
-% displayRelevantVisualWords(testNames{best},w)
-
-% Visualize the precision-recall curve
-figure(4) ; clf ; set(4,'name','Precision-recall on test data') ;
-vl_pr(testLabels, testScores) ;
-
-% Print results
-[drop,drop,info] = vl_pr(testLabels, testScores) ;
-fprintf('Test AP: %.2f\n', info.auc) ;
-
-[drop,perm] = sort(testScores,'descend') ;
-fprintf('Correctly retrieved in the top 36: %d\n', sum(testLabels(perm(1:36)) > 0)) ;
+disp(size(pos_train))
+disp(size(neg_train))
+disp(size(pos_test))
+disp(size(neg_test))
