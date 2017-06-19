@@ -1,29 +1,37 @@
+%Function 
+
 %Adding path to the features
+%   To change features with and without SP, change next line of code
+%   features - features for images with superpixels
+%   featuresNormal - features for images without superpixels
 addpath('/Users/JoseCarlosVillarreal/Documents/DissertationDevelopment/weather-classification-cnn/features/');
 
 %%IMPORTANT VARIABLES TO CHANGES ON EACH RUN
 
+curr_model = 1;
+curr_category = 2;
+
 models = [string('bvlc_googlenet'),string('placesCNN'),string('ResNet50'),string('ResNet101'),string('ResNet152'),string('VGG_CNN_F'),string('VGG_CNN_M'),string('VGG_CNN_S'),string('VGGNet16'),string('VGGNet19') ];
 category = [string('cloudy'), string('foggy'), string('rainy'), string('snowy'), string('sunny')];
 number_features = [9216 4096 18432 18432 18432 4096 4096 4096 4096 4096];
-model = models(1); % 1 - bvlc_googlenet
-current_category = 1;
+model = char(models(curr_model)); % 1 - bvlc_googlenet
 
 
 %Loading data
 %pos_train, neg_train, pos_test, neg_test
 
 %Cloudy Category
-pos_train_cloudy = load(['../features/' model '/' char(category(1)) '/_positive_train_features.mat']) ;
-neg_train_cloudy = load(['../features/' model '/' char(category(1)) '/_negative_train_features.mat']) ;
-pos_test_cloudy = load(['../features/' model '/' char(category(1)) '/_positive_test_features.mat']) ;
-neg_test_cloudy = load(['../features/' model '/' char(category(1)) '/_negative_test_features.mat']) ;
+pos_train_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_positive_train_features.mat']) ;
+neg_train_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_negative_train_features.mat']) ;
+pos_test_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_positive_test_features.mat']) ;
+neg_test_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_negative_test_features.mat']) ;
 
 pos_train_cloudy = pos_train_cloudy.code ;
 neg_train_cloudy = neg_train_cloudy.code_neg ;
 pos_test_cloudy = pos_test_cloudy.code_v ;
 neg_test_cloudy = neg_test_cloudy.code_v_neg ;
 
+%{
 %Foggy Category
 pos_train_foggy = load(['../features/' model '/' char(category(2)) '/_positive_train_features.mat']) ;
 neg_train_foggy = load(['../features/' model '/' char(category(2)) '/_negative_train_features.mat']) ;
@@ -67,6 +75,7 @@ pos_train_sunny = pos_train_sunny.code ;
 neg_train_sunny = neg_train_sunny.code_neg ;
 pos_test_sunny = pos_test_sunny.code_v ;
 neg_test_sunny = neg_test_sunny.code_v_neg ;
+%}
 
 % Labels for each category
 %   1 - Cloudy
@@ -87,6 +96,7 @@ labels_train_1_neg = -1 * ones(size(neg_train_cloudy,2),1)';
 labels_test_1 = ones(size(pos_test_cloudy,2),1)';
 labels_test_1_neg = -1 * ones(size(neg_test_cloudy,2),1)';
 
+%{
 % Foggy
 labels_train_2 = 2 * ones(size(pos_train_foggy,2),1)';
 labels_train_2_neg = -2 * ones(size(neg_train_foggy,2),1)';
@@ -115,12 +125,15 @@ labels_train_5_neg = -5 * ones(size(neg_train_sunny,2),1)';
 labels_test_5 = 5 * ones(size(pos_test_sunny,2),1)';
 labels_test_5_neg = -5 * ones(size(neg_test_sunny,2),1)';
 
+%}
+
 % Adding the labels to the feature vectors
 pos_train_cloudy = vertcat(pos_train_cloudy, labels_train_1);
 neg_train_cloudy = vertcat(neg_train_cloudy, labels_train_1_neg);
 pos_test_cloudy = vertcat(pos_test_cloudy, labels_test_1);
 neg_test_cloudy = vertcat(neg_test_cloudy, labels_test_1_neg);
 
+%{
 pos_train_foggy = vertcat(pos_train_foggy, labels_train_1);
 neg_train_foggy = vertcat(neg_train_foggy, labels_train_1_neg);
 pos_test_foggy = vertcat(pos_test_foggy, labels_test_1);
@@ -155,19 +168,38 @@ neg_test = neg_test(:,randperm(size(neg_test, 2)));
 
 % Separate the rows from the last one, in order of getting 
 % both the data and the labels
-data_pos_train = pos_train(1:9216,:);
-labels_pos_train = pos_train(9217,:);
+data_pos_train = pos_train(1:number_features(curr_model),:);
+labels_pos_train = pos_train(number_features(curr_model)+1,:);
 
-data_neg_train = neg_train(1:9216,:);
-labels_neg_train = neg_train(9217,:);
+data_neg_train = neg_train(1:number_features(curr_model),:);
+labels_neg_train = neg_train(number_features(curr_model)+1,:);
 
-data_pos_test = pos_test(1:9216,:);
-labels_pos_test = pos_test(9217,:);
+data_pos_test = pos_test(1:number_features(curr_model),:);
+labels_pos_test = pos_test(number_features(curr_model)+1,:);
 
-data_neg_test = neg_test(1:9216,:);
-labels_neg_test = neg_test(9217,:);
+data_neg_test = neg_test(1:number_features(curr_model),:);
+labels_neg_test = neg_test(number_features(curr_model)+1,:);
+%}
 
+% Separate the rows from the last one, in order of getting 
+% both the data and the labels
+data_pos_train = pos_train_cloudy(1:number_features(curr_model),:);
+labels_pos_train = pos_train_cloudy(number_features(curr_model)+1,:);
 
+data_neg_train = neg_train_cloudy(1:number_features(curr_model),:);
+labels_neg_train = neg_train_cloudy(number_features(curr_model)+1,:);
+
+data_pos_test = pos_test_cloudy(1:number_features(curr_model),:);
+labels_pos_test = pos_test_cloudy(number_features(curr_model)+1,:);
+
+data_neg_test = neg_test_cloudy(1:number_features(curr_model),:);
+labels_neg_test = neg_test_cloudy(number_features(curr_model)+1,:);
+
+data_train = [data_pos_train data_neg_train];
+labels_train = [labels_pos_train labels_neg_train];
+
+data_test = [data_pos_test data_neg_test];
+labels_test = [labels_pos_test labels_neg_test];
 % --------------------------------------------------------------------
 % Stage B: Training a classifier
 % --------------------------------------------------------------------
@@ -176,33 +208,29 @@ labels_neg_test = neg_test(9217,:);
 % cross-validated. Here for simplicity we pick a valute that works
 % well with all kernels.
 C = 10 ;
-[w, bias] = trainLinearSVM(histograms, labels, C) ;
-disp('Histograms')
-disp(histograms(1:5,1:5))
-disp('labels')
-disp(labels(115:130))
+[w, bias] = trainLinearSVM(data_train, labels_train, C) ;
 
 % Evaluate the scores on the training data
-scores = w' * histograms + bias ;
+scores = w' * data_train + bias ;
 
 % Visualize the ranked list of images
-figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
-displayRankedImageList(names, scores)  ;
+%figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
+%displayRankedImageList(names, scores)  ;
 
 % Visualize the precision-recall curve
-figure(2) ; clf ; set(2,'name','Precision-recall on train data') ;
-vl_pr(labels, scores) ;
+%figure(2) ; clf ; set(2,'name','Precision-recall on train data') ;
+%vl_pr(labels, scores) ;
 
 % --------------------------------------------------------------------
 % Stage C: Classify the test images and assess the performance
 % --------------------------------------------------------------------
 
 % Test the linear SVM
-testScores = w' * testHistograms + bias ;
+testScores = w' * data_test + bias ;
 
 % Visualize the ranked list of images
-figure(3) ; clf ; set(3,'name','Ranked test images (subset)') ;
-displayRankedImageList(testNames, testScores)  ;
+%figure(3) ; clf ; set(3,'name','Ranked test images (subset)') ;
+%displayRankedImageList(testNames, testScores)  ;
 
 % Visualize visual words by relevance on the first image
 % [~,best] = max(testScores) ;
@@ -210,11 +238,11 @@ displayRankedImageList(testNames, testScores)  ;
 
 % Visualize the precision-recall curve
 figure(4) ; clf ; set(4,'name','Precision-recall on test data') ;
-vl_pr(testLabels, testScores) ;
+vl_pr(labels_test, testScores) ;
 
 % Print results
-[drop,drop,info] = vl_pr(testLabels, testScores) ;
+[drop,drop,info] = vl_pr(labels_test, testScores) ;
 fprintf('Test AP: %.2f\n', info.auc) ;
 
 [drop,perm] = sort(testScores,'descend') ;
-fprintf('Correctly retrieved in the top 36: %d\n', sum(testLabels(perm(1:36)) > 0)) ;
+fprintf('Correctly retrieved in the top 36: %d\n', sum(labels_test(perm(1:36)) > 0)) ;
