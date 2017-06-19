@@ -24,6 +24,7 @@ model_to_use = strfind(models, model);
 category_to_use = strfind(categories,category);
 curr_model = 0;
 curr_category = 0;
+model = char(model);
 for i = 1:1:size(model_to_use,2)
     if ~isempty(model_to_use{i})
         curr_model = i;
@@ -40,10 +41,10 @@ clear i
 %pos_train, neg_train, pos_test, neg_test
 
 %Cloudy Category
-pos_train_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_positive_train_features.mat']) ;
-neg_train_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_negative_train_features.mat']) ;
-pos_test_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_positive_test_features.mat']) ;
-neg_test_cloudy = load(['../features/' model '/' char(category(curr_category)) '/_negative_test_features.mat']) ;
+pos_train_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_positive_train_features.mat']) ;
+neg_train_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_negative_train_features.mat']) ;
+pos_test_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_positive_test_features.mat']) ;
+neg_test_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_negative_test_features.mat']) ;
 
 pos_train_cloudy = pos_train_cloudy.code ;
 neg_train_cloudy = neg_train_cloudy.code_neg ;
@@ -229,7 +230,7 @@ labels_test = [labels_pos_test labels_neg_test];
 [train_w, train_bias] = trainLinearSVM(data_train, labels_train, C) ;
 
 % Evaluate the scores on the training data
-train_scores = w' * data_train + bias ;
+train_scores = train_w' * data_train + train_bias ;
 
 % Visualize the ranked list of images
 %figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
@@ -244,7 +245,7 @@ train_scores = w' * data_train + bias ;
 % --------------------------------------------------------------------
 
 % Test the linear SVM
-test_scores = w' * data_test + bias ;
+test_scores = train_w' * data_test + train_bias ;
 
 % Visualize the ranked list of images
 %figure(3) ; clf ; set(3,'name','Ranked test images (subset)') ;
