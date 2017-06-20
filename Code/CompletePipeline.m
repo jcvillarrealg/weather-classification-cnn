@@ -15,8 +15,11 @@ curr_category = 1;
 %   use the script called ProcessPictures.m
 
 
+
+
 %Extract features with selected model
 %   Allow an option for all models perhaps when value of curr_model is -1
+%   Allow an option for all categories perhaps when value of curr_categories is -1
 
 
 %Train and Test Classifier with extracted features
