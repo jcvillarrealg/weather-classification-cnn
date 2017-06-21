@@ -1,4 +1,4 @@
-function [ bValue ] = drawsuperpixelsonimage( imageFile, iNumPixels, count, directory)
+function drawsuperpixelsonimage( imageFile, iNumPixels, count, directory)
 %drawsuperpixels Draw Superpixels on each image in the specified range
 %   Detailed explanation goes here
 A =imageFile;
@@ -8,6 +8,5 @@ f = figure('visible', 'off');
 iptsetpref('ImshowBorder','tight');
 imshow(imoverlay(A,BW,'white'))
 saveas(f,char(strcat(directory,pad(string(count),4,'left','0'))),'jpg')
-bValue = true
 end
 

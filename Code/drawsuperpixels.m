@@ -1,4 +1,4 @@
-function [ bValue ] = drawsuperpixels( arrImagesNames, iNumPixels)
+function drawsuperpixels( arrImagesNames, iNumPixels)
 %drawsuperpixels Draw Superpixels on each image in the specified range
 %   Detailed explanation goes here
 count = 1
