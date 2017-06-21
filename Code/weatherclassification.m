@@ -50,7 +50,28 @@ end
 
 %Extract features with selected model
 %Directory for extracted features -> ../extractedFeatures/
-featuresdirectory = '../extractedFeatures/';
+features_base_dir = '../extractedFeatures/';
+
+if numsuperpixels > 0
+   %If there are superpixels, the images are in drectoriesforspimages directories 
+   for i=1:numel(models)
+       for j = 1:numel(categories)
+            current_dir = string(features_base_dir) + string(sprintf('%s/%s/', models(i), categories(j)));
+            [code, code_v, code_neg, code_v_neg] = matdeeprep(char(models(i)), 'ExtendedWeatherDatabase', char(categories(j)));
+        
+        save(char(current_dir + string('_positive_train_features.mat')), 'code');
+        save(char(current_dir + string('_positive_test_features.mat')), 'code_v');
+        save(char(current_dir + string('_negative_train_features.mat')), 'code_neg');
+        save(char(current_dir + string('_negative_test_features.mat')), 'code_v_neg');
+            
+       end
+   end
+else
+    %If there are no superpixels, the images are in the origindirectories
+    %directories
+    
+end
+
 for i = 1:1:numel(models)
     for j=1:1:numel(categories)
         disp(fprintf('[LOG] Category %s \n', categories(j)))

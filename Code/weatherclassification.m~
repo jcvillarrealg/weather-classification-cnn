@@ -13,6 +13,8 @@
 
 
 function weatherclassification(models, categories, numsuperpixels, C, runid)
+
+addpath('../../../caffe/matlab/demo/');
 % Define parameters
 numsuperpixels = 50; %Number of superpixels for the images
 C = 10; %Classifier constant
@@ -49,6 +51,16 @@ end
 %Extract features with selected model
 %Directory for extracted features -> ../extractedFeatures/
 featuresdirectory = '../extractedFeatures/';
+
+if numsuperpixels > 0
+   %If there are superpixels, the images are in drectoriesforspimages directories 
+   
+else
+    %If there are no superpixels, the images are in the origindirectories
+    %directories
+    
+end
+
 for i = 1:1:numel(models)
     for j=1:1:numel(categories)
         disp(fprintf('[LOG] Category %s \n', categories(j)))
