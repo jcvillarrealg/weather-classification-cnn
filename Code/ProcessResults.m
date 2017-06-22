@@ -8,12 +8,13 @@
 %   The columns have the models in the following order:
 %   'bvlc_googlenet','placesCNN','ResNet50','ResNet101','ResNet152','VGG_CNN_F','VGG_CNN_M','VGG_CNN_S','VGGNet16','VGGNet19'
 %   The rows have the categories in the following order:
-%   'cloudy','foggy','rainy','snowy','sunny'
+%   'cloudy' (first row),'foggy'(second row),'rainy' (third row),'snowy','sunny'
 %   The results show the average precision for each case
 % Identify Results
-results_superpixels_dir = '../results_superpixels/';
+results_superpixels_dir = '../results_21JuneSuperPixels/';
 results_normal_dir = '../results_normal/';
 models = [string('bvlc_googlenet'),string('placesCNN'),string('ResNet50'),string('ResNet101'),string('ResNet152'),string('VGG_CNN_F'),string('VGG_CNN_M'),string('VGG_CNN_S'),string('VGGNet16'),string('VGGNet19') ];
+models = [string('bvlc_googlenet')];
 categories = [string('cloudy'), string('foggy'), string('rainy'), string('snowy'), string('sunny')];
 
 complete_values = []; % Variable to store the complete set of results

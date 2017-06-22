@@ -15,6 +15,7 @@
 function weatherclassification(models, categories, numsuperpixels, C, runid)
 
 addpath('../../../caffe/matlab/demo/');
+predefined = true;
 % Define parameters
 numsuperpixels = 50; %Number of superpixels for the images
 C = 10; %Classifier constant
@@ -32,61 +33,158 @@ curr_category = 1;
 %If we are using superpixels, then mark images with corresponding
 %superpixels
 origindirectories = [];
-directoriesforimages = [];
+directoriesforspimages = [];
 for i = 1:1:numel(categories)
     directoryoriginaux = string(sprintf('../Dataset/%s/', categories(i)));
     directoryfinalaux = string(sprintf('../Dataset/%s_marked/', categories(i)));
-   directoriesforspimages = [directoriesforimages directoryfinalaux];
+   directoriesforspimages = [directoriesforspimages directoryfinalaux];
    origindirectories = [origindirectories directoryoriginaux];
 end
 
 % If the number of superpixels is above 0, then we most process the images
 if numsuperpixels > 0
+    database = 'ExtendedWeatherDatabase_SP';
     for i = 1:1:numel(categories)
-       processpictures( origindirectories(i), directoriesforspimages(i), numsuperpixels)
+       processpictures(origindirectories(i), directoriesforspimages(i), numsuperpixels)
+    end
+    % The ExtendedWeatherDatabase with the required format must be built
+    if predefined
+        %Load the images from the 'marked' folders
+        ewd_spbasedir = sprintf('../%s/', database);
+        %Copy to POS_TRAIN subdirectory
+        for i = 1:numel(categories)
+           for j = 1:770
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(i), sprintf('%04d',j)), [ewd_spbasedir sprintf('POS_TRAIN/%s/', categories(i))]);
+           end
+        end
+        %Copy to POS_TEST subdirectory
+        for i = 1:numel(categories)
+           for j = 771:1100
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(i), sprintf('%04d',j)), [ewd_spbasedir sprintf('POS_TEST/%s/', categories(i))]);
+           end
+        end
+        %Copy to NEG_TRAIN subdirectory
+        for i = 1:numel(categories)
+           %Take 1-193
+           k = (1 + mod(i+1-1, numel(categories)));
+           for j = 1:193
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TRAIN/%s/', categories(i))]);
+           end
+           
+           %Take 194-386
+           k = (1 + mod(i+2-1, numel(categories)));
+           for j = 194:386
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TRAIN/%s/', categories(i))]);
+           end
+           
+           %Take 387-578
+           k = (1 + mod(i+3-1, numel(categories)));
+           for j = 387:578
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TRAIN/%s/', categories(i))]);
+           end
+           
+           %Take 579-770
+           k = (1 + mod(i+4-1, numel(categories)));
+           for j = 579:770
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TRAIN/%s/', categories(i))]);
+           end
+        end
+
+        %Copy to NEG_TEST subdirectory
+        for i = 1:numel(categories)
+           %Take 771-853
+           k = (1 + mod(i+1-1, numel(categories)));
+           for j = 771:853
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TEST/%s/', categories(i))]);
+           end
+           
+           %Take 854-936
+           k = (1 + mod(i+2-1, numel(categories)));
+           for j = 854:936
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TEST/%s/', categories(i))]);
+           end
+           
+           %Take 937-1018
+           k = (1 + mod(i+3-1, numel(categories)));
+           for j = 937:1018
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TEST/%s/', categories(i))]);
+           end
+           
+           %Take 1019-1100
+           k = (1 + mod(i+4-1, numel(categories)));
+           for j = 1019:1100
+               copyfile(sprintf('../Dataset/%s_marked/%s.jpg',categories(k), sprintf('%04d',j)), [ewd_spbasedir sprintf('NEG_TEST/%s/', categories(i))]);
+           end
+        end
     end
 end
 
 
 %Extract features with selected model
 %Directory for extracted features -> ../extractedFeatures/
-featuresdirectory = '../extractedFeatures/';
+features_base_dir = '../extractedFeatures/';
 
 if numsuperpixels > 0
    %If there are superpixels, the images are in drectoriesforspimages directories 
-   
-else
-    %If there are no superpixels, the images are in the origindirectories
-    %directories
-    
-end
-
-for i = 1:1:numel(models)
-    for j=1:1:numel(categories)
-        disp(fprintf('[LOG] Category %s \n', categories(j)))
-        %For each model and each of its categories, extract features and
-        %save them to a file
-        current_dir = string(features_base_dir) + string(sprintf('%s/%s/', models(i), categories(j)));
-        disp(current_dir)
-        [code, code_v, code_neg, code_v_neg] = matdeeprep(char(models(i)), 'ExtendedWeatherDatabase', char(categories(j)));
+   for i=1:numel(models)
+       for j = 1:numel(categories)
+            current_dir = string(features_base_dir) + string(sprintf('%s/%s/', models(i), categories(j)));
+            [code, code_v, code_neg, code_v_neg] = matdeeprep(char(models(i)), 'ExtendedWeatherDatabase_SP', char(categories(j)));
         
-        save(char(current_dir + string('_positive_train_features.mat')), 'code');
-        save(char(current_dir + string('_positive_test_features.mat')), 'code_v');
-        save(char(current_dir + string('_negative_train_features.mat')), 'code_neg');
-        save(char(current_dir + string('_negative_test_features.mat')), 'code_v_neg');
-        
+        save(char(current_dir + string('positive_train_features.mat')), 'code');
+        save(char(current_dir + string('positive_test_features.mat')), 'code_v');
+        save(char(current_dir + string('negative_train_features.mat')), 'code_neg');
+        save(char(current_dir + string('negative_test_features.mat')), 'code_v_neg');
+            
         code = [];
         code_v = [];
         code_neg = [];
         code_v_neg = [];
         
-    end
+       end
+   end
+else
+    %If there are no superpixels, the images are in the origindirectories
+    %directories
+    for i=1:numel(models)
+       for j = 1:numel(categories)
+            current_dir = string(features_base_dir) + string(sprintf('%s/%s/', models(i), categories(j)));
+            [code, code_v, code_neg, code_v_neg] = matdeeprep(char(models(i)), 'ExtendedWeatherDatabase', char(categories(j)));
+        
+        save(char(current_dir + string('positive_train_features.mat')), 'code');
+        save(char(current_dir + string('positive_test_features.mat')), 'code_v');
+        save(char(current_dir + string('negative_train_features.mat')), 'code_neg');
+        save(char(current_dir + string('negative_test_features.mat')), 'code_v_neg');
+            
+        code = [];
+        code_v = [];
+        code_neg = [];
+        code_v_neg = [];
+        
+       end
+   end
 end
 
 
 %Train and Test Classifier with extracted features
+% For each model 
+for i = (1:1:length(models))
+    disp(fprintf('[LOG] Model %s \n', models(i)))
+% For each category
+    for j = (1:1:length(categories))
+        disp(fprintf('[LOG] Category %s \n', categories(j)))
+% Train the classifier, getting is results as output
+    % Average Precision is in the info.auc struct
+        mkdir(sprintf('../IntermediateResults/%s/', 
+        base_dir = sprintf('../results_21JuneSuperPixels/%s/%s/', models(i), categories(j));
+        [train_w,train_bias,train_scores,test_scores,info]=WeatherClassifier_TwoClass(models(i), categories(j), images_type, C);
+        disp(sprintf('Model %s for category %s has AP of %s', models(i), categories(j), info.auc))
+        save([base_dir 'results.mat'],'train_w','train_bias','train_scores','test_scores','info');
+        clear train_w train_bias test_w test_bias train_scores test_scores info;
+  % Save results to a file
+    end
+end
 
-
-%Display results and save in a convenient lication
+%Display results and save in a convenient location
 
 end
