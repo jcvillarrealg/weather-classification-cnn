@@ -6,7 +6,7 @@ A =imageFile;
 BW = boundarymask(L);
 f = figure('visible', 'off');
 iptsetpref('ImshowBorder','tight');
-imshow(imoverlay(A,BW,'white'))
+imshow(imoverlay(A,BW,'cyan'),'InitialMagnification','fit')
 saveas(f,char(strcat(directory,pad(string(count),4,'left','0'))),'jpg')
 end
 

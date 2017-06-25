@@ -15,14 +15,18 @@
 function weatherclassification(models, categories, numsuperpixels, C, runid)
 
 addpath('../../../caffe/matlab/demo/');
+addpath('../../../caffe/models/');
 predefined = true;
+images_type = 'normal';
 % Define parameters
-numsuperpixels = 50; %Number of superpixels for the images
+%Number of superpixels for the images
 C = 10; %Classifier constant
 %models = [string('bvlc_googlenet'),string('placesCNN'),string('ResNet50'),string('ResNet101'),string('ResNet152'),string('VGG_CNN_F'),string('VGG_CNN_M'),string('VGG_CNN_S'),string('VGGNet16'),string('VGGNet19') ];
 %categories = [string('cloudy'), string('foggy'), string('rainy'), string('snowy'), string('sunny')];
 curr_model = 1;
 curr_category = 1;
+skip = false;
+if ~skip
 
 %Identify images (without superpixels)
 %   Find the corresponding directory
@@ -34,6 +38,7 @@ curr_category = 1;
 %superpixels
 origindirectories = [];
 directoriesforspimages = [];
+disp('[LOG] Gathering relevant directories')
 for i = 1:1:numel(categories)
     directoryoriginaux = string(sprintf('../Dataset/%s/', categories(i)));
     directoryfinalaux = string(sprintf('../Dataset/%s_marked/', categories(i)));
@@ -43,14 +48,23 @@ end
 
 % If the number of superpixels is above 0, then we most process the images
 if numsuperpixels > 0
+    images_type = 'superpixel';
+    disp('[LOG] Marking Superpixels')
+    disp(sprintf('[LOG] %s Superpixels', numsuperpixels))
+    disp(numsuperpixels)
     database = 'ExtendedWeatherDatabase_SP';
     for i = 1:1:numel(categories)
-       processpictures(origindirectories(i), directoriesforspimages(i), numsuperpixels)
+        %%%DELETE For normal execution
+        if i > 3
+        disp(sprintf('[LOG] Starting Category %s', categories(i)))
+        processpictures(origindirectories(i), directoriesforspimages(i), numsuperpixels)
+        end
     end
     % The ExtendedWeatherDatabase with the required format must be built
     if predefined
         %Load the images from the 'marked' folders
         ewd_spbasedir = sprintf('../%s/', database);
+        disp('[LOG] Preparing Dataset with Positive and Negative Partitions')
         %Copy to POS_TRAIN subdirectory
         for i = 1:numel(categories)
            for j = 1:770
@@ -118,13 +132,15 @@ if numsuperpixels > 0
         end
     end
 end
-
+end
 
 %Extract features with selected model
 %Directory for extracted features -> ../extractedFeatures/
 features_base_dir = '../extractedFeatures/';
 
+if ~skip
 if numsuperpixels > 0
+    disp('[LOG] Extracting features (with superpixels)')
    %If there are superpixels, the images are in drectoriesforspimages directories 
    for i=1:numel(models)
        for j = 1:numel(categories)
@@ -146,6 +162,7 @@ if numsuperpixels > 0
 else
     %If there are no superpixels, the images are in the origindirectories
     %directories
+    disp('[LOG] Extracting features (without superpixels)')
     for i=1:numel(models)
        for j = 1:numel(categories)
             current_dir = string(features_base_dir) + string(sprintf('%s/%s/', models(i), categories(j)));
@@ -164,10 +181,13 @@ else
        end
    end
 end
-
+end
 
 %Train and Test Classifier with extracted features
 % For each model 
+disp('[LOG] Training and Testing Process')
+mkdir(sprintf('../IntermediateResults/%s/', runid));
+if ~skip
 for i = (1:1:length(models))
     disp(fprintf('[LOG] Model %s \n', models(i)))
 % For each category
@@ -175,7 +195,6 @@ for i = (1:1:length(models))
         disp(fprintf('[LOG] Category %s \n', categories(j)))
 % Train the classifier, getting is results as output
     % Average Precision is in the info.auc struct
-        mkdir(sprintf('../IntermediateResults/%s/', runid));
         base_dir = sprintf('../IntermediateResults/%s/%s/%s/', runid, models(i), categories(j));
         mkdir(base_dir);
         [train_w,train_bias,train_scores,test_scores,info]=WeatherClassifier_TwoClass(models(i), categories(j), images_type, C);
@@ -185,7 +204,7 @@ for i = (1:1:length(models))
   % Save results to a file
     end
 end
-
+end
 %Write results to CSV file
 %   This script generates a CSV files with the results of the experiment
 %   found in the results folders in the directroy of the project
@@ -201,6 +220,8 @@ end
 
 results = sprintf('../IntermediateResults/%s/', runid);
 
+disp('[LOG] Preparing Results')
+
 complete_values = []; % Variable to store the complete set of results
 ap_values = []; % Variable to store the results of each row
 % Load results
@@ -214,6 +235,7 @@ for i = 1:1:size(categories,2)
 end
 finalresultsdir = sprintf('../FinalResults/%s/', runid);
 mkdir(finalresultsdir);
+finalresultsdir = [finalresultsdir 'WeatherClassResults.csv'];
 csvwrite(finalresultsdir, complete_values);
-
+disp(sprintf('[LOG] Results available in %s', finalresultsdir))
 end

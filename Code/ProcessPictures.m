@@ -21,6 +21,9 @@ end
 %counter to indicate the names of the images
 count = 1;
 for file = files'
+    if mod(count,10) == 0
+            disp(sprintf('[LOG] Processed image %s', file.name))
+    end
     %Identifying the name of the current image
     aux = file.name;
     %Reading the file with the current image

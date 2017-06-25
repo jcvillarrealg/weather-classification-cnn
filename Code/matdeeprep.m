@@ -73,7 +73,7 @@ code_v_neg = [];
 caffe.set_mode_cpu();
 
 % Initialize the network using BVLC CaffeNet for image classification
-model_dir = sprintf('../../models/%s/', model);
+model_dir = sprintf('../../../caffe/models/%s/', model);
 
 prototxt_file = dir( fullfile(model_dir,'*deploy.prototxt') );   %# list all *.prototxt files
 caffemodel_file = dir( fullfile(model_dir,'*.caffemodel') );   %# list all *.caffemodel files
@@ -104,31 +104,31 @@ end
 
 %% (2) Set paths & calculate number of images inside folders
 
-pos_train_dir= sprintf('./datasets/%s/POS_TRAIN/%s/', dataset, category);
+pos_train_dir= sprintf('../%s/POS_TRAIN/%s/', dataset, category);
 pos_num_train_images=length(dir(pos_train_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from pos_num_train_images.
 
 
-neg_train_dir= sprintf('./datasets/%s/NEG_TRAIN/%s/', dataset, category);
+neg_train_dir= sprintf('../%s/NEG_TRAIN/%s/', dataset, category);
 neg_num_train_images=length(dir(neg_train_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from neg_num_train_images.
 
 
-pos_test_dir= sprintf('./datasets/%s/POS_TEST/%s/', dataset,category);
+pos_test_dir= sprintf('../%s/POS_TEST/%s/', dataset,category);
 pos_num_test_images=length(dir(pos_test_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from pos_num_test_images.
 
-neg_test_dir= sprintf('./datasets/%s/NEG_TEST/%s/', dataset,category);
+neg_test_dir= sprintf('../%s/NEG_TEST/%s/', dataset,category);
 neg_num_test_images=length(dir(neg_test_dir))-2; % Unless you want to consider '.' and '..' as directories, you're probably going to want to subtract 2 from neg_num_test_images.
 
 % Checking if DS_STORE file exists in the path
-if exist(sprintf('./datasets/%s/POS_TRAIN/%s/.DS_STORE', dataset, category), 'file') == 2
+if exist(sprintf('../%s/POS_TRAIN/%s/.DS_STORE', dataset, category), 'file') == 2
     pos_num_train_images = pos_num_train_images - 1;
 end
-if exist(sprintf('./datasets/%s/NEG_TRAIN/%s/.DS_STORE', dataset, category), 'file') == 2
+if exist(sprintf('../%s/NEG_TRAIN/%s/.DS_STORE', dataset, category), 'file') == 2
     neg_num_train_images = neg_num_train_images - 1;
 end
-if exist(sprintf('./datasets/%s/POS_TEST/%s/.DS_STORE', dataset, category), 'file') == 2
+if exist(sprintf('../%s/POS_TEST/%s/.DS_STORE', dataset, category), 'file') == 2
     pos_num_test_images = pos_num_test_images - 1;
 end
-if exist(sprintf('./datasets/%s/NEG_TEST/%s/.DS_STORE', dataset, category), 'file') == 2
+if exist(sprintf('../%s/NEG_TEST/%s/.DS_STORE', dataset, category), 'file') == 2
     neg_num_test_images = neg_num_test_images - 1;
 end
 
@@ -373,10 +373,10 @@ fprintf('Total Time Elapsed:  %.d hours & %.d minutes\n',floor(hours),mins);
 %% Functions for preparing images for caffe
 function cropped_data = prepare_image(im,mean_flag)
 if mean_flag==1
-    d = load('../../models/placesCNN/places_mean.mat');
+    d = load('../../../caffe/models/placesCNN/places_mean.mat');
     mean_data = d.image_mean;
 else
-    d = load('../+caffe/imagenet/ilsvrc_2012_mean.mat');
+    d = load('../../../caffe/matlab/+caffe/imagenet/ilsvrc_2012_mean.mat');
     mean_data = d.mean_data;
 end
 IMAGE_DIM = 256;
@@ -391,10 +391,10 @@ cropped_data = im_data(15:241, 15:241, :); % take 227 x 227 center crop
 
 function cropped_data = prepare_image_224_224(im,mean_flag)
 if mean_flag==1
-    d = load('../../models/placesCNN/places_mean.mat');
+    d = load('../../../caffe/models/placesCNN/places_mean.mat');
     mean_data = d.image_mean;
 else
-    d = load('../+caffe/imagenet/ilsvrc_2012_mean.mat');
+    d = load('../../../caffe/matlab/+caffe/imagenet/ilsvrc_2012_mean.mat');
     mean_data = d.mean_data;
 end
 IMAGE_DIM = 256;
