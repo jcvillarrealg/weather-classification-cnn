@@ -26,7 +26,8 @@ C = 10; %Classifier constant
 curr_model = 1;
 curr_category = 1;
 skip = false;
-if ~skip
+skipsuperpixels = false;
+if ~skipsuperpixels
 
 %Identify images (without superpixels)
 %   Find the corresponding directory
@@ -54,11 +55,11 @@ if numsuperpixels > 0
     disp(numsuperpixels)
     database = 'ExtendedWeatherDatabase_SP';
     for i = 1:1:numel(categories)
-        %%%DELETE For normal execution
-        if i > 3
+        if i > 4
         disp(sprintf('[LOG] Starting Category %s', categories(i)))
         processpictures(origindirectories(i), directoriesforspimages(i), numsuperpixels)
         end
+
     end
     % The ExtendedWeatherDatabase with the required format must be built
     if predefined
@@ -187,7 +188,6 @@ end
 % For each model 
 disp('[LOG] Training and Testing Process')
 mkdir(sprintf('../IntermediateResults/%s/', runid));
-if ~skip
 for i = (1:1:length(models))
     disp(fprintf('[LOG] Model %s \n', models(i)))
 % For each category
@@ -203,7 +203,6 @@ for i = (1:1:length(models))
         clear train_w train_bias test_w test_bias train_scores test_scores info;
   % Save results to a file
     end
-end
 end
 %Write results to CSV file
 %   This script generates a CSV files with the results of the experiment

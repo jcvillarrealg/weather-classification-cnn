@@ -41,10 +41,10 @@ clear i
 %pos_train, neg_train, pos_test, neg_test
 
 %Cloudy Category
-pos_train_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_positive_train_features.mat']) ;
-neg_train_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_negative_train_features.mat']) ;
-pos_test_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_positive_test_features.mat']) ;
-neg_test_cloudy = load(['../features/' model '/' char(categories(curr_category)) '/_negative_test_features.mat']) ;
+pos_train_cloudy = load(['../extractedFeatures/' model '/' char(categories(curr_category)) '/positive_train_features.mat']) ;
+neg_train_cloudy = load(['../extractedFeatures/' model '/' char(categories(curr_category)) '/negative_train_features.mat']) ;
+pos_test_cloudy = load(['../extractedFeatures/' model '/' char(categories(curr_category)) '/positive_test_features.mat']) ;
+neg_test_cloudy = load(['../extractedFeatures/' model '/' char(categories(curr_category)) '/negative_test_features.mat']) ;
 
 pos_train_cloudy = pos_train_cloudy.code ;
 neg_train_cloudy = neg_train_cloudy.code_neg ;
